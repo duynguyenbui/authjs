@@ -1,0 +1,25 @@
+services:
+  postgres:
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=postgrespw
+    ports:
+      - 5432:5432
+    volumes:
+      - /var/lib/postgresql/data
+  server:
+    build:
+      context: .
+    command: >
+      sh -c "npx prisma generate && npx prisma db push && npm run dev"
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://postgres:postgrespw@postgres:5432/authjs
+      AUTH_SECRET: somthingreallyreallyreallysecret
+      GITHUB_CLIENT_ID: 
+      GITHUB_CLIENT_SECRET: 
+      RESEND_API_KEY: 
+    ports:
+      - 3000:3000
+    depends_on:
+      - postgres
